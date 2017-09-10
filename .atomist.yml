@@ -1,0 +1,18 @@
+---
+kind: "operation"
+client: "com.atomist:rug"
+version: "1.0.0-20170816122823"
+generator:
+  name: "NewCommandSideProject"
+  group: "my-company-rugs"
+  artifact: "command-side-project-generator"
+  version: "0.1.4"
+  origin:
+    repo: "git@github.com:idugalic/my-company-rugs-domain-generator.git"
+    branch: "master"
+    sha: "2f6af7e"
+  parameters:
+    - "aggregateName": "Team"
+    - "version": "0.1.0-SNAPSHOT"
+    - "description": "Command Side - Aggregate"
+
