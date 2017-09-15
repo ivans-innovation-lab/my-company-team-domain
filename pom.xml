@@ -17,12 +17,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.idugalic</groupId>
-			<artifactId>my-company-common-blog</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.idugalic</groupId>
-			<artifactId>my-company-common-project</artifactId>
+			<artifactId>my-company-common-team</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
