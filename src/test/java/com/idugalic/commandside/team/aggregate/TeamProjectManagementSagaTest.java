@@ -9,7 +9,7 @@ import com.idugalic.commandside.project.command.FindProjectCommand;
 import com.idugalic.common.model.AuditEntry;
 import com.idugalic.common.project.event.ProjectFoundEvent;
 import com.idugalic.common.project.event.ProjectNotFoundEvent;
-import com.idugalic.common.team.event.AssignTeamToProjectStartedEvent;
+import com.idugalic.common.team.event.AssignProjectToTeamStartedEvent;
 
 public class TeamProjectManagementSagaTest {
 	private FixtureConfiguration testFixture;
@@ -29,33 +29,33 @@ public class TeamProjectManagementSagaTest {
 
 		testFixture.givenNoPriorActivity()
 		           .whenAggregate(teamId)
-				   .publishes(new AssignTeamToProjectStartedEvent(teamId, auditEntry, projectId))
+				   .publishes(new AssignProjectToTeamStartedEvent(teamId, auditEntry, projectId))
 				   .expectActiveSagas(1)
 				   .expectDispatchedCommands(new FindProjectCommand(projectId, auditEntry));
 	}
 	
 	@Test
-	public void testAssigneTeamToProjectSuccess() throws Exception {
+	public void testAssigneProjectToTeamSuccess() throws Exception {
 		String projectId = "projectId";
 		String teamId = "teamId";
 
 		testFixture.givenAggregate(teamId)
-		           .published(new AssignTeamToProjectStartedEvent (teamId, auditEntry, projectId))
+		           .published(new AssignProjectToTeamStartedEvent (teamId, auditEntry, projectId))
 		           .whenPublishingA(new ProjectFoundEvent(projectId, auditEntry))
 		           .expectActiveSagas(0)
-		           .expectDispatchedCommands(new MarkAssignTeamToProjectSucceededCommand(auditEntry,teamId, projectId));
+		           .expectDispatchedCommands(new MarkAssignProjectToTeamSucceededCommand(auditEntry,teamId, projectId));
 	}
 	
 	@Test
-	public void testAssigneTeamToProjectFailed() throws Exception {
+	public void testAssigneProjectToTeamFailed() throws Exception {
 		String projectId = "projectId";
 		String teamId = "teamId";
 
 		testFixture.givenAggregate(teamId)
-		           .published(new AssignTeamToProjectStartedEvent (teamId, auditEntry, projectId))
+		           .published(new AssignProjectToTeamStartedEvent (teamId, auditEntry, projectId))
 		           .whenPublishingA(new ProjectNotFoundEvent(projectId, auditEntry))
 		           .expectActiveSagas(0)
-		           .expectDispatchedCommands(new MarkAssignTeamToProjectFailedCommand(auditEntry,teamId, projectId));
+		           .expectDispatchedCommands(new MarkAssignProjectToTeamFailedCommand(auditEntry,teamId, projectId));
 	}
 
 }

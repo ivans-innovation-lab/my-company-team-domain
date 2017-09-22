@@ -13,11 +13,11 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.idugalic.commandside.team.command.AssignTeamToProjectCommand;
+import com.idugalic.commandside.team.command.AssignProjectToTeamCommand;
 import com.idugalic.commandside.team.command.CreateTeamCommand;
-import com.idugalic.common.team.event.AssignTeamToProjectFailedEvent;
-import com.idugalic.common.team.event.AssignTeamToProjectStartedEvent;
-import com.idugalic.common.team.event.AssignTeamToProjectSucceededEvent;
+import com.idugalic.common.team.event.AssignProjectToTeamFailedEvent;
+import com.idugalic.common.team.event.AssignProjectToTeamStartedEvent;
+import com.idugalic.common.team.event.AssignProjectToTeamSucceededEvent;
 import com.idugalic.common.team.event.TeamCreatedEvent;
 import com.idugalic.common.team.model.TeamStatus;
 
@@ -84,32 +84,35 @@ class TeamAggregate {
 	}
 
 	@CommandHandler
-	public void assignTeamToProject(AssignTeamToProjectCommand command) {
-		LOG.debug("Command: 'AssignTeamToProjectCommand' received.");
+	public void assignTeamToProject(AssignProjectToTeamCommand command) {
+		LOG.debug("Command: 'AssignProjectToTeamCommand' received.");
 		// This event will be managed by TeamMangementSaga.java
-		apply(new AssignTeamToProjectStartedEvent(id, command.getAuditEntry(), command.getProjectId()));
+		apply(new AssignProjectToTeamStartedEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
 	@CommandHandler
-	public void assignTeamToProjectFailed(MarkAssignTeamToProjectFailedCommand command) {
-		LOG.debug("Command: 'AssignTeamToProjectFailedCommand' received.");
-		apply(new AssignTeamToProjectFailedEvent(id, command.getAuditEntry(), command.getProjectId()));
+	public void assignTeamToProjectFailed(MarkAssignProjectToTeamFailedCommand command) {
+		LOG.debug("Command: 'MarkAssignProjectToTeamFailedCommand' received.");
+		apply(new AssignProjectToTeamFailedEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
 	@EventHandler
-	public void on(AssignTeamToProjectFailedEvent event) {
+	public void on(AssignProjectToTeamFailedEvent event) {
 		this.project = new Project(event.getProjectId(), Status.FAILED);
+		LOG.debug("Event Applied: 'AssignProjectToTeamFailedEvent' [{}]", event.getId());
 	}
 
 	@CommandHandler
-	public void assignTeamToProjectSuccess(MarkAssignTeamToProjectSucceededCommand command) {
-		LOG.debug("Command: 'AssignTeamToProjectSuccessCommand' received.");
-		apply(new AssignTeamToProjectSucceededEvent(id, command.getAuditEntry(), command.getProjectId()));
+	public void assignTeamToProjectSuccess(MarkAssignProjectToTeamSucceededCommand command) {
+		LOG.debug("Command: 'MarkAssignProjectToTeamSucceededCommand' received.");
+		apply(new AssignProjectToTeamSucceededEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
 	@EventHandler
-	public void on(AssignTeamToProjectSucceededEvent event) {
+	public void on(AssignProjectToTeamSucceededEvent event) {
 		this.project = new Project(event.getProjectId(), Status.ASSIGNED);
+		LOG.debug("Event Applied: 'AssignProjectToTeamSucceededEvent' [{}]", event.getId());
+
 	}
 
 	public String getId() {

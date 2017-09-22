@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.idugalic.commandside.project.command.FindProjectCommand;
 import com.idugalic.common.project.event.ProjectFoundEvent;
 import com.idugalic.common.project.event.ProjectNotFoundEvent;
-import com.idugalic.common.team.event.AssignTeamToProjectStartedEvent;
+import com.idugalic.common.team.event.AssignProjectToTeamStartedEvent;
 import static org.axonframework.eventhandling.saga.SagaLifecycle.associateWith;
 
 /**
@@ -31,7 +31,7 @@ public class TeamProjectManagementSaga {
 
 	@StartSaga
 	@SagaEventHandler(associationProperty = "projectId")
-	public void on(AssignTeamToProjectStartedEvent event) {
+	public void on(AssignProjectToTeamStartedEvent event) {
 		this.projectId = event.getProjectId();
 		this.teamId = event.getId();
 		associateWith("id", this.projectId);
@@ -43,7 +43,7 @@ public class TeamProjectManagementSaga {
 	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectNotFoundEvent event) {
 
-		MarkAssignTeamToProjectFailedCommand command = new MarkAssignTeamToProjectFailedCommand(event.getAuditEntry(), this.teamId, this.projectId);
+		MarkAssignProjectToTeamFailedCommand command = new MarkAssignProjectToTeamFailedCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}
 	
@@ -51,7 +51,7 @@ public class TeamProjectManagementSaga {
 	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectFoundEvent event) {
 		
-		MarkAssignTeamToProjectSucceededCommand command = new MarkAssignTeamToProjectSucceededCommand(event.getAuditEntry(), this.teamId, this.projectId);
+		MarkAssignProjectToTeamSucceededCommand command = new MarkAssignProjectToTeamSucceededCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}
 }
