@@ -10,40 +10,40 @@ import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
- * A sample command for creating an aggregate.
+ * A command for creating an aggregate.
  */
 public class CreateTeamCommand extends AuditableAbstractCommand {
 
-    @TargetAggregateIdentifier
-    private String id;
-    @NotNull(message = "Name is mandatory")
-    @NotBlank(message = "Name is mandatory")
-    private String name;
-    private String description;
-    private TeamStatus status;
+	@TargetAggregateIdentifier
+	private String id;
+	@NotNull(message = "Name is mandatory")
+	@NotBlank(message = "Name is mandatory")
+	private String name;
+	private String description;
+	private TeamStatus status;
 
-    public CreateTeamCommand(AuditEntry auditEntry, String name, String description, TeamStatus status) {
-        super(auditEntry);
-        this.id = UUID.randomUUID().toString();
-        this.name = name;
-        this.description = description;
-        this.status = status;
-    }
+	public CreateTeamCommand(AuditEntry auditEntry, String name, String description, TeamStatus status) {
+		super(auditEntry);
+		this.id = UUID.randomUUID().toString();
+		this.name = name;
+		this.description = description;
+		this.status = status;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public TeamStatus getStatus() {
-        return status;
-    }
+	public TeamStatus getStatus() {
+		return status;
+	}
 
 }

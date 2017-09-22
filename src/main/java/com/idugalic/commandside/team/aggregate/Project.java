@@ -1,10 +1,15 @@
 package com.idugalic.commandside.team.aggregate;
 
+/**
+ * A representation of Project aggregate
+ * 
+ * @author idugalic
+ *
+ */
 public class Project {
 	private String projectId;
 	private Status status;
-	
-	
+
 	public Project(String projectId, Status status) {
 		super();
 		this.projectId = projectId;
@@ -23,33 +28,33 @@ public class Project {
 		this.status = status;
 	}
 }
+
 enum Status {
 
-    ASSIGNED("Assigned", "assigned"), FAILED("Failed", "failed");
+	ASSIGNED("Assigned", "assigned"), FAILED("Failed", "failed");
 
-    private String displayName;
-    private String urlSlug;
+	private String displayName;
+	private String urlSlug;
 
-    Status(String displayName, String urlSlug) {
-        this.displayName = displayName;
-        this.urlSlug = urlSlug;
-    }
+	Status(String displayName, String urlSlug) {
+		this.displayName = displayName;
+		this.urlSlug = urlSlug;
+	}
 
-    public String getDisplayName() {
-        return displayName;
-    }
+	public String getDisplayName() {
+		return displayName;
+	}
 
-    public String getUrlSlug() {
-        return urlSlug;
-    }
+	public String getUrlSlug() {
+		return urlSlug;
+	}
 
-    public String getId() {
-        return name();
-    }
+	public String getId() {
+		return name();
+	}
 
-    @Override
-    public String toString() {
-        return getDisplayName();
-    }
+	@Override
+	public String toString() {
+		return getDisplayName();
+	}
 }
-

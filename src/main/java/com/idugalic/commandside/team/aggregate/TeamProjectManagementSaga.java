@@ -14,6 +14,12 @@ import com.idugalic.common.project.event.ProjectNotFoundEvent;
 import com.idugalic.common.team.event.AssignTeamToProjectStartedEvent;
 import static org.axonframework.eventhandling.saga.SagaLifecycle.associateWith;
 
+/**
+ * Saga for managing transaction in Team - Project aggregates relation
+ * 
+ * @author idugalic
+ *
+ */
 @Saga
 public class TeamProjectManagementSaga {
 
