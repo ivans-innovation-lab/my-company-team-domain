@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 	<name>my-company-team-domain</name>
 	<description>Command Side - Aggregate</description>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<parent>
 		<groupId>com.idugalic</groupId>
@@ -18,6 +18,11 @@
 		<dependency>
 			<groupId>com.idugalic</groupId>
 			<artifactId>my-company-common-team</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.idugalic</groupId>
+			<artifactId>my-company-project-domain</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

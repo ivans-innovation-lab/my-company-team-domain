@@ -1,20 +1,25 @@
 package com.idugalic.commandside.team.aggregate;
 
-import com.idugalic.commandside.team.command.CreateTeamCommand;
-import com.idugalic.common.team.event.TeamCreatedEvent;
-import com.idugalic.common.team.model.TeamStatus;
+import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
+
+import java.util.Collection;
+import java.util.Collections;
+
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
+import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
-import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
+import com.idugalic.commandside.team.command.AssignTeamToProjectCommand;
+import com.idugalic.commandside.team.command.CreateTeamCommand;
+import com.idugalic.common.team.event.AssignTeamToProjectFailedEvent;
+import com.idugalic.common.team.event.AssignTeamToProjectStartedEvent;
+import com.idugalic.common.team.event.AssignTeamToProjectSuccessEvent;
+import com.idugalic.common.team.event.TeamCreatedEvent;
+import com.idugalic.common.team.model.TeamStatus;
 
 /**
  * Team aggregate root
@@ -33,7 +38,7 @@ class TeamAggregate {
     private String name;
     private String description;
     private TeamStatus status = TeamStatus.PASSIVE;
-    private String projectId;
+    private Project project;
     private Collection<Member> members;
 
     /**
@@ -71,6 +76,35 @@ class TeamAggregate {
         LOG.debug("Event Applied: 'TeamCreatedEvent' [{}]", event.getId());
     }
 
+    @CommandHandler
+    public void assignTeamToProject(AssignTeamToProjectCommand command) {
+        LOG.debug("Command: 'AssignTeamToProjectCommand' received.");
+        // This event will be managed by TeamMangementSaga.java
+        apply(new AssignTeamToProjectStartedEvent(id, command.getAuditEntry(), command.getProjectId()));
+    }
+    
+    @CommandHandler
+    public void assignTeamToProjectFailed(AssignTeamToProjectFailedCommand command) {
+        LOG.debug("Command: 'AssignTeamToProjectFailedCommand' received.");
+        apply(new AssignTeamToProjectFailedEvent(id, command.getAuditEntry(), command.getProjectId()));
+    }
+    
+    @EventHandler
+    public void on(AssignTeamToProjectFailedEvent event){
+    	this.project= new Project(event.getProjectId(), Status.FAILED);
+    }
+    
+    @CommandHandler
+    public void assignTeamToProjectSuccess(AssignTeamToProjectSuccessCommand command) {
+        LOG.debug("Command: 'AssignTeamToProjectSuccessCommand' received.");
+        apply(new AssignTeamToProjectSuccessEvent(id, command.getAuditEntry(), command.getProjectId()));
+    }
+    
+    @EventHandler
+    public void on(AssignTeamToProjectSuccessEvent event){
+    	this.project= new Project(event.getProjectId(), Status.ASSIGNED);
+    }
+    
     public String getId() {
         return id;
     }
@@ -87,8 +121,8 @@ class TeamAggregate {
         return status;
     }
 
-    public String getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
     public Collection<Member> getMembers() {
