@@ -12,36 +12,40 @@ import com.idugalic.commandside.project.command.FindProjectCommand;
 import com.idugalic.common.project.event.ProjectFoundEvent;
 import com.idugalic.common.project.event.ProjectNotFoundEvent;
 import com.idugalic.common.team.event.AssignTeamToProjectStartedEvent;
+import static org.axonframework.eventhandling.saga.SagaLifecycle.associateWith;
 
 @Saga
-class TeamManagementSaga {
+public class TeamProjectManagementSaga {
 
 	private String projectId;
+	private String teamId;
 
 	@Autowired
-	private CommandGateway commandGateway;
+	private transient CommandGateway commandGateway;
 
 	@StartSaga
 	@SagaEventHandler(associationProperty = "projectId")
 	public void on(AssignTeamToProjectStartedEvent event) {
 		this.projectId = event.getProjectId();
-		FindProjectCommand command = new FindProjectCommand(event.getProjectId(), event.getAuditEntry());
+		this.teamId = event.getId();
+		associateWith("id", this.projectId);
+		FindProjectCommand command = new FindProjectCommand(this.projectId, event.getAuditEntry());
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}
 	
 	@EndSaga
-	@SagaEventHandler(associationProperty = "projectId")
+	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectNotFoundEvent event) {
 
-		AssignTeamToProjectFailedCommand command = new AssignTeamToProjectFailedCommand(event.getAuditEntry(), event.getId(), "Project not found.");
+		AssignTeamToProjectFailedCommand command = new AssignTeamToProjectFailedCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}
 	
 	@EndSaga
-	@SagaEventHandler(associationProperty = "projectId")
+	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectFoundEvent event) {
-
-		AssignTeamToProjectSuccessCommand command = new AssignTeamToProjectSuccessCommand(event.getAuditEntry(), event.getId(), "Project found, success.");
+		
+		AssignTeamToProjectSuccessCommand command = new AssignTeamToProjectSuccessCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}
 }
