@@ -12,7 +12,8 @@ This project is driven using [Maven][mvn].
  
 Make sure that you have this libraries installed in your local maven repository:
 
- - [my-company-common](https://github.com/ivans-innovation-lab/my-company-common)
+ - [my-company-common-team](https://github.com/ivans-innovation-lab/my-company-common/tree/master/my-company-common-team)
+ - [my-company-project-domain](https://github.com/ivans-innovation-lab/my-company-project-domain)
 
 ```bash
 $ ./mvnw clean install
@@ -20,9 +21,7 @@ $ ./mvnw clean install
 
 ### Run tests
 
-This component comes with some rudimentary tests as a good starting
-point for writing your own.  Use the following command to execute the
-tests using Maven:
+This component comes with tests. Use the following command to execute the tests using Maven:
 
 ```bash
 $ ./mvnw test
