@@ -4,13 +4,13 @@ import com.idugalic.common.command.AuditableAbstractCommand;
 import com.idugalic.common.model.AuditEntry;
 import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
-class AssignTeamToProjectFailedCommand extends AuditableAbstractCommand {
+class MarkAssignTeamToProjectSucceededCommand extends AuditableAbstractCommand {
 
     @TargetAggregateIdentifier
     private String id;
     private String projectId;
 
-    public AssignTeamToProjectFailedCommand(AuditEntry auditEntry, String id, String projectId) {
+    public MarkAssignTeamToProjectSucceededCommand(AuditEntry auditEntry, String id, String projectId) {
         super(auditEntry);
         this.id = id;
         this.projectId = projectId;

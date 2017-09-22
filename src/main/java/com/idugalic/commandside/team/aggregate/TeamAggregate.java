@@ -17,7 +17,7 @@ import com.idugalic.commandside.team.command.AssignTeamToProjectCommand;
 import com.idugalic.commandside.team.command.CreateTeamCommand;
 import com.idugalic.common.team.event.AssignTeamToProjectFailedEvent;
 import com.idugalic.common.team.event.AssignTeamToProjectStartedEvent;
-import com.idugalic.common.team.event.AssignTeamToProjectSuccessEvent;
+import com.idugalic.common.team.event.AssignTeamToProjectSucceededEvent;
 import com.idugalic.common.team.event.TeamCreatedEvent;
 import com.idugalic.common.team.model.TeamStatus;
 
@@ -84,7 +84,7 @@ class TeamAggregate {
     }
     
     @CommandHandler
-    public void assignTeamToProjectFailed(AssignTeamToProjectFailedCommand command) {
+    public void assignTeamToProjectFailed(MarkAssignTeamToProjectFailedCommand command) {
         LOG.debug("Command: 'AssignTeamToProjectFailedCommand' received.");
         apply(new AssignTeamToProjectFailedEvent(id, command.getAuditEntry(), command.getProjectId()));
     }
@@ -95,13 +95,13 @@ class TeamAggregate {
     }
     
     @CommandHandler
-    public void assignTeamToProjectSuccess(AssignTeamToProjectSuccessCommand command) {
+    public void assignTeamToProjectSuccess(MarkAssignTeamToProjectSucceededCommand command) {
         LOG.debug("Command: 'AssignTeamToProjectSuccessCommand' received.");
-        apply(new AssignTeamToProjectSuccessEvent(id, command.getAuditEntry(), command.getProjectId()));
+        apply(new AssignTeamToProjectSucceededEvent(id, command.getAuditEntry(), command.getProjectId()));
     }
     
     @EventHandler
-    public void on(AssignTeamToProjectSuccessEvent event){
+    public void on(AssignTeamToProjectSucceededEvent event){
     	this.project= new Project(event.getProjectId(), Status.ASSIGNED);
     }
     

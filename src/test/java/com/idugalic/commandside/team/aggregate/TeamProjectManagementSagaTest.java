@@ -43,7 +43,7 @@ public class TeamProjectManagementSagaTest {
 		           .published(new AssignTeamToProjectStartedEvent (teamId, auditEntry, projectId))
 		           .whenPublishingA(new ProjectFoundEvent(projectId, auditEntry))
 		           .expectActiveSagas(0)
-		           .expectDispatchedCommands(new AssignTeamToProjectSuccessCommand(auditEntry,teamId, projectId));
+		           .expectDispatchedCommands(new MarkAssignTeamToProjectSucceededCommand(auditEntry,teamId, projectId));
 	}
 	
 	@Test
@@ -55,7 +55,7 @@ public class TeamProjectManagementSagaTest {
 		           .published(new AssignTeamToProjectStartedEvent (teamId, auditEntry, projectId))
 		           .whenPublishingA(new ProjectNotFoundEvent(projectId, auditEntry))
 		           .expectActiveSagas(0)
-		           .expectDispatchedCommands(new AssignTeamToProjectFailedCommand(auditEntry,teamId, projectId));
+		           .expectDispatchedCommands(new MarkAssignTeamToProjectFailedCommand(auditEntry,teamId, projectId));
 	}
 
 }

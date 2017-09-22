@@ -37,7 +37,7 @@ public class TeamProjectManagementSaga {
 	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectNotFoundEvent event) {
 
-		AssignTeamToProjectFailedCommand command = new AssignTeamToProjectFailedCommand(event.getAuditEntry(), this.teamId, this.projectId);
+		MarkAssignTeamToProjectFailedCommand command = new MarkAssignTeamToProjectFailedCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}
 	
@@ -45,7 +45,7 @@ public class TeamProjectManagementSaga {
 	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectFoundEvent event) {
 		
-		AssignTeamToProjectSuccessCommand command = new AssignTeamToProjectSuccessCommand(event.getAuditEntry(), this.teamId, this.projectId);
+		MarkAssignTeamToProjectSucceededCommand command = new MarkAssignTeamToProjectSucceededCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}
 }
