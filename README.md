@@ -1,6 +1,6 @@
-# my-company-team-domain 
+# my-company-team-domain [![CircleCI](https://circleci.com/gh/ivans-innovation-lab/my-company-team-domain.svg?style=svg)](https://circleci.com/gh/ivans-innovation-lab/my-company-team-domain)
 
-This component processes commands. Commands are actions which change state in some way. The execution of these commands results in Events being generated which are persisted by Axon, and propagated out to other components (possibly on other VMs). In event-sourcing, events are the sole records in the system. They are used by the system to describe and re-build domain aggregate (`Team.java`) on demand, one event at a time.
+This component processes commands. Commands are actions which change state in some way. The execution of these commands results in Events being generated which are persisted by Axon, and propagated out to other components (possibly on other VMs). In event-sourcing, events are the sole records in the system. They are used by the system to describe and re-build domain aggregate (`TeamAggregate.java`) on demand, one event at a time.
 
 ## Development
 
@@ -12,7 +12,8 @@ This project is driven using [Maven][mvn].
  
 Make sure that you have this libraries installed in your local maven repository:
 
- - [my-company-common](https://github.com/ivans-innovation-lab/my-company-common)
+ - [my-company-common-team](https://github.com/ivans-innovation-lab/my-company-common/tree/master/my-company-common-team)
+ - [my-company-project-domain](https://github.com/ivans-innovation-lab/my-company-project-domain)
 
 ```bash
 $ ./mvnw clean install
@@ -20,9 +21,7 @@ $ ./mvnw clean install
 
 ### Run tests
 
-This component comes with some rudimentary tests as a good starting
-point for writing your own.  Use the following command to execute the
-tests using Maven:
+This component comes with tests. Use the following command to execute the tests using Maven:
 
 ```bash
 $ ./mvnw test
