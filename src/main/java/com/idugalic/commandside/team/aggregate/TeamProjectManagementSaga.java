@@ -6,6 +6,8 @@ import org.axonframework.eventhandling.saga.EndSaga;
 import org.axonframework.eventhandling.saga.SagaEventHandler;
 import org.axonframework.eventhandling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.idugalic.commandside.project.command.FindProjectCommand;
@@ -22,6 +24,8 @@ import static org.axonframework.eventhandling.saga.SagaLifecycle.associateWith;
  */
 @Saga
 public class TeamProjectManagementSaga {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(TeamProjectManagementSaga.class);
 
 	private String projectId;
 	private String teamId;
@@ -42,15 +46,16 @@ public class TeamProjectManagementSaga {
 	@EndSaga
 	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectNotFoundEvent event) {
-
+		LOG.debug("SagaEventHandler: 'ProjectNotFoundEvent' received.");
 		MarkAssignProjectToTeamFailedCommand command = new MarkAssignProjectToTeamFailedCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
+		
 	}
 	
 	@EndSaga
 	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectFoundEvent event) {
-		
+		LOG.debug("SagaEventHandler: 'ProjectFoundEvent' received.");
 		MarkAssignProjectToTeamSucceededCommand command = new MarkAssignProjectToTeamSucceededCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 	}

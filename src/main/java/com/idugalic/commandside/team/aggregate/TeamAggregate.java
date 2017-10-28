@@ -7,7 +7,6 @@ import java.util.Collections;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
-import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
@@ -85,33 +84,33 @@ class TeamAggregate {
 
 	@CommandHandler
 	public void assignTeamToProject(AssignProjectToTeamCommand command) {
-		LOG.debug("Command: 'AssignProjectToTeamCommand' received.");
+		LOG.info("################ "+"Command: 'AssignProjectToTeamCommand' received.");
 		// This event will be managed by TeamMangementSaga.java
 		apply(new AssignProjectToTeamStartedEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
 	@CommandHandler
 	public void assignTeamToProjectFailed(MarkAssignProjectToTeamFailedCommand command) {
-		LOG.debug("Command: 'MarkAssignProjectToTeamFailedCommand' received.");
+		LOG.info("################ "+"Command: 'MarkAssignProjectToTeamFailedCommand' received.");
 		apply(new AssignProjectToTeamFailedEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
-	@EventHandler
+	@EventSourcingHandler
 	public void on(AssignProjectToTeamFailedEvent event) {
 		this.project = new Project(event.getProjectId(), Status.FAILED);
-		LOG.debug("Event Applied: 'AssignProjectToTeamFailedEvent' [{}]", event.getId());
+		LOG.info("################ "+"Event Applied: 'AssignProjectToTeamFailedEvent' [{}]", event.getId());
 	}
 
 	@CommandHandler
 	public void assignTeamToProjectSuccess(MarkAssignProjectToTeamSucceededCommand command) {
-		LOG.debug("Command: 'MarkAssignProjectToTeamSucceededCommand' received.");
+		LOG.info("################ "+"Command: 'MarkAssignProjectToTeamSucceededCommand' received.");
 		apply(new AssignProjectToTeamSucceededEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
-	@EventHandler
+	@EventSourcingHandler
 	public void on(AssignProjectToTeamSucceededEvent event) {
 		this.project = new Project(event.getProjectId(), Status.ASSIGNED);
-		LOG.debug("Event Applied: 'AssignProjectToTeamSucceededEvent' [{}]", event.getId());
+		LOG.info("################ "+"Event Applied: 'AssignProjectToTeamSucceededEvent' [{}]", event.getId());
 
 	}
 
