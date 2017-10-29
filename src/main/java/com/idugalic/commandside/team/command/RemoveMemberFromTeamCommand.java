@@ -4,7 +4,6 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import com.idugalic.common.command.AuditableAbstractCommand;
 import com.idugalic.common.model.AuditEntry;
-import com.idugalic.common.team.model.Member;
 
 /**
  * A command for removing the member from the team
@@ -16,20 +15,22 @@ public class RemoveMemberFromTeamCommand extends AuditableAbstractCommand {
 
 	@TargetAggregateIdentifier
 	private String id;
-	private Member member;
+	private String userId;
 
-	public RemoveMemberFromTeamCommand(AuditEntry auditEntry, String id, Member member) {
+	public RemoveMemberFromTeamCommand(AuditEntry auditEntry, String id, String userId){
 		super(auditEntry);
 		this.id = id;
-		this.member = member;
+		this.userId = userId;
 	}
 
 	public String getId() {
 		return id;
 	}
 
-	public Member getMember() {
-		return member;
+	public String getUserId() {
+		return userId;
 	}
+
+
 
 }

@@ -142,12 +142,12 @@ class TeamAggregate {
 	@CommandHandler
 	public void removeMemeberFromTeam(RemoveMemberFromTeamCommand command) {
 		LOG.info("################ "+"Command: 'RemoveMemberFromTeamCommand' received.");
-		apply(new MemberRemovedFromTeamEvent(command.getId(), command.getAuditEntry(), command.getMember()));
+		apply(new MemberRemovedFromTeamEvent(command.getId(), command.getAuditEntry(), command.getUserId()));
 	}
 	
 	@EventSourcingHandler
 	public void on(MemberRemovedFromTeamEvent event) {
-		this.members.remove(event.getMember().getUserId());
+		this.members.remove(event.getMemberId());
 		LOG.info("################ "+"Event Applied: 'MemberRemovedFromTeamEvent' [{}]", event.getId());
 	}
 	
