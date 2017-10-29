@@ -2,8 +2,11 @@ package com.idugalic.commandside.team.aggregate;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
@@ -12,12 +15,20 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.idugalic.commandside.team.command.ActivateTeamCommand;
+import com.idugalic.commandside.team.command.AddMemberToTeamCommand;
 import com.idugalic.commandside.team.command.AssignProjectToTeamCommand;
 import com.idugalic.commandside.team.command.CreateTeamCommand;
+import com.idugalic.commandside.team.command.PassivateTeamCommand;
+import com.idugalic.commandside.team.command.RemoveMemberFromTeamCommand;
 import com.idugalic.common.team.event.AssignProjectToTeamFailedEvent;
 import com.idugalic.common.team.event.AssignProjectToTeamStartedEvent;
 import com.idugalic.common.team.event.AssignProjectToTeamSucceededEvent;
+import com.idugalic.common.team.event.MemberAddedToTeamEvent;
+import com.idugalic.common.team.event.MemberRemovedFromTeamEvent;
+import com.idugalic.common.team.event.TeamActivatedEvent;
 import com.idugalic.common.team.event.TeamCreatedEvent;
+import com.idugalic.common.team.event.TeamPassivatedEvent;
 import com.idugalic.common.team.model.TeamStatus;
 
 /**
@@ -39,7 +50,9 @@ class TeamAggregate {
 	private String description;
 	private TeamStatus status = TeamStatus.PASSIVE;
 	private Project project;
-	private Collection<Member> members;
+	private Map<String, Member> members = new HashMap();
+	//private Collection<Member> members = new ArrayList<Member>();
+
 
 	/**
 	 * Default constructor
@@ -111,7 +124,55 @@ class TeamAggregate {
 	public void on(AssignProjectToTeamSucceededEvent event) {
 		this.project = new Project(event.getProjectId(), Status.ASSIGNED);
 		LOG.info("################ "+"Event Applied: 'AssignProjectToTeamSucceededEvent' [{}]", event.getId());
+	}
 
+	@CommandHandler
+	public void addMemeberToTeam(AddMemberToTeamCommand command) {
+		LOG.info("################ "+"Command: 'AddMemberToTeamCommand' received.");
+		apply(new MemberAddedToTeamEvent(command.getId(), command.getAuditEntry(), command.getMember()));
+	}
+	
+	@EventSourcingHandler
+	public void on(MemberAddedToTeamEvent event) {
+		Member newMember = new Member(event.getMember().getUserId(), event.getMember().getStartDate(), event.getMember().getEndDate(), event.getMember().getWeeklyHours());
+		this.members.put(newMember.getUserId(), newMember);
+		LOG.info("################ "+"Event Applied: 'MemberAddedToTeamEvent' [{}]", event.getId());
+	}
+	
+	@CommandHandler
+	public void removeMemeberFromTeam(RemoveMemberFromTeamCommand command) {
+		LOG.info("################ "+"Command: 'RemoveMemberFromTeamCommand' received.");
+		apply(new MemberRemovedFromTeamEvent(command.getId(), command.getAuditEntry(), command.getMember()));
+	}
+	
+	@EventSourcingHandler
+	public void on(MemberRemovedFromTeamEvent event) {
+		this.members.remove(event.getMember().getUserId());
+		LOG.info("################ "+"Event Applied: 'MemberRemovedFromTeamEvent' [{}]", event.getId());
+	}
+	
+	@CommandHandler
+	public void activateTeam(ActivateTeamCommand command) {
+		LOG.info("################ "+"Command: 'ActivateTeamCommand' received.");
+		apply(new TeamActivatedEvent(command.getId(), command.getAuditEntry()));
+	}
+	
+	@EventSourcingHandler
+	public void on(TeamActivatedEvent event) {
+		this.status = TeamStatus.ACTIVE;
+		LOG.info("################ "+"Event Applied: 'TeamActivatedEvent' [{}]", event.getId());
+	}
+
+	@CommandHandler
+	public void passivateTeam(PassivateTeamCommand command) {
+		LOG.info("################ "+"Command: 'PassivateTeamCommand' received.");
+		apply(new TeamPassivatedEvent(command.getId(), command.getAuditEntry()));
+	}
+	
+	@EventSourcingHandler
+	public void on(TeamPassivatedEvent event) {
+		this.status = TeamStatus.PASSIVE;
+		LOG.info("################ "+"Event Applied: 'TeamPassivatedEvent' [{}]", event.getId());
 	}
 
 	public String getId() {
@@ -134,7 +195,8 @@ class TeamAggregate {
 		return project;
 	}
 
-	public Collection<Member> getMembers() {
-		return Collections.unmodifiableCollection(members);
+	public Map<String, Member> getMembers() {
+		return members;
 	}
+
 }
