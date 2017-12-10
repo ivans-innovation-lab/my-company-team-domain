@@ -33,4 +33,5 @@ Need Help?  [Join our Slack team][slack].
 
 [idugalic]: http://idugalic.pro
 [lab]: http://lab.idugalic.pro
-[slack]: https://join.slack.com/t/idugalic/signup
+[slack]: https://communityinviter.com/apps/idugalic/idugalic
+[atomist]: https://www.atomist.com/
