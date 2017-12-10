@@ -72,7 +72,6 @@ class TeamAggregate {
 	 */
 	@CommandHandler
 	public TeamAggregate(CreateTeamCommand command) {
-		LOG.debug("Command: 'CreateTeamCommand' received.");
 		apply(new TeamCreatedEvent(command.getId(), command.getAuditEntry(), command.getName(),
 				command.getDescription(), command.getStatus()));
 	}
@@ -97,38 +96,31 @@ class TeamAggregate {
 
 	@CommandHandler
 	public void assignTeamToProject(AssignProjectToTeamCommand command) {
-		LOG.info("################ "+"Command: 'AssignProjectToTeamCommand' received.");
-		// This event will be managed by TeamMangementSaga.java
 		apply(new AssignProjectToTeamStartedEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
 	@CommandHandler
 	public void assignTeamToProjectFailed(MarkAssignProjectToTeamFailedCommand command) {
-		LOG.info("################ "+"Command: 'MarkAssignProjectToTeamFailedCommand' received.");
 		apply(new AssignProjectToTeamFailedEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
 	@EventSourcingHandler
 	public void on(AssignProjectToTeamFailedEvent event) {
 		this.project = new Project(event.getProjectId(), Status.FAILED);
-		LOG.info("################ "+"Event Applied: 'AssignProjectToTeamFailedEvent' [{}]", event.getId());
 	}
 
 	@CommandHandler
 	public void assignTeamToProjectSuccess(MarkAssignProjectToTeamSucceededCommand command) {
-		LOG.info("################ "+"Command: 'MarkAssignProjectToTeamSucceededCommand' received.");
 		apply(new AssignProjectToTeamSucceededEvent(id, command.getAuditEntry(), command.getProjectId()));
 	}
 
 	@EventSourcingHandler
 	public void on(AssignProjectToTeamSucceededEvent event) {
 		this.project = new Project(event.getProjectId(), Status.ASSIGNED);
-		LOG.info("################ "+"Event Applied: 'AssignProjectToTeamSucceededEvent' [{}]", event.getId());
 	}
 
 	@CommandHandler
 	public void addMemeberToTeam(AddMemberToTeamCommand command) {
-		LOG.info("################ "+"Command: 'AddMemberToTeamCommand' received.");
 		apply(new MemberAddedToTeamEvent(command.getId(), command.getAuditEntry(), command.getMember()));
 	}
 	
@@ -136,43 +128,36 @@ class TeamAggregate {
 	public void on(MemberAddedToTeamEvent event) {
 		Member newMember = new Member(event.getMember().getUserId(), event.getMember().getStartDate(), event.getMember().getEndDate(), event.getMember().getWeeklyHours());
 		this.members.put(newMember.getUserId(), newMember);
-		LOG.info("################ "+"Event Applied: 'MemberAddedToTeamEvent' [{}]", event.getId());
 	}
 	
 	@CommandHandler
 	public void removeMemeberFromTeam(RemoveMemberFromTeamCommand command) {
-		LOG.info("################ "+"Command: 'RemoveMemberFromTeamCommand' received.");
 		apply(new MemberRemovedFromTeamEvent(command.getId(), command.getAuditEntry(), command.getUserId()));
 	}
 	
 	@EventSourcingHandler
 	public void on(MemberRemovedFromTeamEvent event) {
 		this.members.remove(event.getMemberId());
-		LOG.info("################ "+"Event Applied: 'MemberRemovedFromTeamEvent' [{}]", event.getId());
 	}
 	
 	@CommandHandler
 	public void activateTeam(ActivateTeamCommand command) {
-		LOG.info("################ "+"Command: 'ActivateTeamCommand' received.");
 		apply(new TeamActivatedEvent(command.getId(), command.getAuditEntry()));
 	}
 	
 	@EventSourcingHandler
 	public void on(TeamActivatedEvent event) {
 		this.status = TeamStatus.ACTIVE;
-		LOG.info("################ "+"Event Applied: 'TeamActivatedEvent' [{}]", event.getId());
 	}
 
 	@CommandHandler
 	public void passivateTeam(PassivateTeamCommand command) {
-		LOG.info("################ "+"Command: 'PassivateTeamCommand' received.");
 		apply(new TeamPassivatedEvent(command.getId(), command.getAuditEntry()));
 	}
 	
 	@EventSourcingHandler
 	public void on(TeamPassivatedEvent event) {
 		this.status = TeamStatus.PASSIVE;
-		LOG.info("################ "+"Event Applied: 'TeamPassivatedEvent' [{}]", event.getId());
 	}
 
 	public String getId() {

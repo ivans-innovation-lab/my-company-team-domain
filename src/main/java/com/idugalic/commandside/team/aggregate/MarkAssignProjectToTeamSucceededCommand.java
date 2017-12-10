@@ -1,7 +1,7 @@
 package com.idugalic.commandside.team.aggregate;
 
 /**
- * NOT public class. It will not be a part of the API. This command is only used in the scope of this 'aggregate' package.
+ * NOT a public class. It will not be a part of the API. This command is only used in the scope of this 'aggregate' package.
  * 
  */
 import com.idugalic.common.command.AuditableAbstractCommand;

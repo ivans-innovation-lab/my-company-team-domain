@@ -46,7 +46,6 @@ public class TeamProjectManagementSaga {
 	@EndSaga
 	@SagaEventHandler(associationProperty = "id")
 	public void on(ProjectNotFoundEvent event) {
-		LOG.debug("SagaEventHandler: 'ProjectNotFoundEvent' received.");
 		MarkAssignProjectToTeamFailedCommand command = new MarkAssignProjectToTeamFailedCommand(event.getAuditEntry(), this.teamId, this.projectId);
 		commandGateway.send(command, LoggingCallback.INSTANCE);
 		
