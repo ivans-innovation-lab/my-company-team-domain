@@ -15,7 +15,7 @@ jobs:
           key: my-company-team-domain-{{ checksum "pom.xml" }}
 
       - run: 
-          name: Install maven artifact
+          name: Verify maven application (run any checks on results of integration tests to ensure quality criteria are met)
           command: mvn -s .circleci/maven.settings.xml verify -P idugalic-cloud
 
       - save_cache:
