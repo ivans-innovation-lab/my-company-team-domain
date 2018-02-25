@@ -2,11 +2,8 @@ package com.idugalic.commandside.team.aggregate;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
@@ -50,9 +47,7 @@ class TeamAggregate {
 	private String description;
 	private TeamStatus status = TeamStatus.PASSIVE;
 	private Project project;
-	private Map<String, Member> members = new HashMap();
-	//private Collection<Member> members = new ArrayList<Member>();
-
+	private Set<Member> members = new HashSet<Member>();
 
 	/**
 	 * Default constructor
@@ -127,17 +122,18 @@ class TeamAggregate {
 	@EventSourcingHandler
 	public void on(MemberAddedToTeamEvent event) {
 		Member newMember = new Member(event.getMember().getUserId(), event.getMember().getStartDate(), event.getMember().getEndDate(), event.getMember().getWeeklyHours());
-		this.members.put(newMember.getUserId(), newMember);
+		this.members.add(newMember);
 	}
 	
 	@CommandHandler
 	public void removeMemeberFromTeam(RemoveMemberFromTeamCommand command) {
-		apply(new MemberRemovedFromTeamEvent(command.getId(), command.getAuditEntry(), command.getUserId()));
+		apply(new MemberRemovedFromTeamEvent(command.getId(), command.getAuditEntry(), command.getMember()));
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
 	@EventSourcingHandler
 	public void on(MemberRemovedFromTeamEvent event) {
-		this.members.remove(event.getMemberId());
+		this.members.remove(event.getMember());
 	}
 	
 	@CommandHandler
@@ -180,7 +176,7 @@ class TeamAggregate {
 		return project;
 	}
 
-	public Map<String, Member> getMembers() {
+	public Set<Member> getMembers() {
 		return members;
 	}
 

@@ -71,7 +71,8 @@ public class TeamAggregateTest {
     
     @Test
     public void removeMemberTest() throws Exception {
-    	RemoveMemberFromTeamCommand command = new RemoveMemberFromTeamCommand(auditEntry, "id2", WHO);
-        fixture.given(new TeamCreatedEvent(command.getId(), command.getAuditEntry(), "name", "desc", TeamStatus.PASSIVE)).when(command).expectEvents(new MemberRemovedFromTeamEvent("id2", auditEntry, WHO));
+    	com.idugalic.common.team.model.Member member = new com.idugalic.common.team.model.Member(WHO, null, null, 1000L);
+    	RemoveMemberFromTeamCommand command = new RemoveMemberFromTeamCommand(auditEntry, "id2", member);
+        fixture.given(new TeamCreatedEvent(command.getId(), command.getAuditEntry(), "name", "desc", TeamStatus.PASSIVE)).when(command).expectEvents(new MemberRemovedFromTeamEvent("id2", auditEntry, member));
     }
 }
