@@ -1,5 +1,8 @@
 package com.idugalic.commandside.team.aggregate;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * A representation of Project aggregate
  * 
@@ -26,6 +29,16 @@ public class Project {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return EqualsBuilder.reflectionEquals(this, o);
+	}
+
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
 	}
 }
 

@@ -12,16 +12,16 @@ jobs:
       - checkout
 
       - restore_cache:
-          key: my-company-team-domain0001-{{ checksum "pom.xml" }}
-            
-      - deploy:
-          name: Deploy maven artifact
-          command: mvn -s .circleci/maven.settings.xml deploy -P idugalic-cloud
+          key: my-company-team-domain-{{ checksum "pom.xml" }}
+
+      - run: 
+          name: Verify maven application (run any checks on results of integration tests to ensure quality criteria are met)
+          command: mvn -s .circleci/maven.settings.xml verify -P idugalic-cloud
 
       - save_cache:
           paths:
             - ~/.m2
-          key: my-company-team-domain0001-{{ checksum "pom.xml" }}
+          key: my-company-team-domain-{{ checksum "pom.xml" }}
       
       - run:
           name: Collecting test results
@@ -35,6 +35,24 @@ jobs:
           
       - store_artifacts:
           path: junit/
+
+  deploy:
+    <<: *defaults
+    steps:
+
+      - checkout
+
+      - restore_cache:
+          key: my-company-team-domain-{{ checksum "pom.xml" }}
+            
+      - deploy:
+          name: Deploy maven artifact
+          command: mvn -s .circleci/maven.settings.xml -DskipTests deploy -P idugalic-cloud
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: my-company-team-domain-{{ checksum "pom.xml" }}
           
       - run:
           name: Collecting artifacts
@@ -54,3 +72,9 @@ workflows:
   my-company-team-domain-workflow:
     jobs:
       - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
